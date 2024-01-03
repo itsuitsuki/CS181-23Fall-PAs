@@ -223,7 +223,7 @@ class LanguageIDModel(object):
         "*** YOUR CODE HERE ***"
         # initial param
         self.hidden_size = 400
-        self.learning_rate = -0.05
+        self.learning_rate = -0.15
         self.initial_weights = nn.Parameter(self.num_chars, self.hidden_size)
         self.initial_bias = nn.Parameter(1, self.hidden_size)
         self.hidden_weights_1 = nn.Parameter(self.hidden_size, self.hidden_size)
@@ -301,7 +301,9 @@ class LanguageIDModel(object):
         Trains the model.
         """
         "*** YOUR CODE HERE ***"
-        while dataset.get_validation_accuracy() < 0.812:
+        epoch = 0
+        while epoch <= 23 or dataset.get_validation_accuracy() < 0.83:
+            epoch += 1
             for features, labels in dataset.iterate_once(self.batch_size):
                 loss = self.get_loss(features, labels)
                 grad_w1, grad_b1, grad_w2, grad_b2, grad_w3, grad_b3, grad_w4, grad_b4 = nn.gradients(loss, [self.initial_weights, self.initial_bias, self.hidden_weights_1, self.hidden_bias_1, self.hidden_weights_2, self.hidden_bias_2, self.output_weights, self.output_bias])
@@ -313,3 +315,4 @@ class LanguageIDModel(object):
                 self.hidden_bias_2.update(grad_b3, self.learning_rate)
                 self.output_weights.update(grad_w4, self.learning_rate)
                 self.output_bias.update(grad_b4, self.learning_rate)
+            
